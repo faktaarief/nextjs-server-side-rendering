@@ -1,20 +1,22 @@
 import Head from 'next/head'
-import Link from 'next/link'
 import { Container, Row, Col } from 'react-bootstrap'
-import { useRouter } from 'next/router'
 import axios from 'axios'
-import { useQuery } from 'react-query'
 
 const getPokemon = async (key, name) => {
-  const { data } = await axios.get(`/api/pokemon?name=${escape(name)}`)
+  const { data } = await axios.get(`http://localhost:3000/api/pokemon?name=${escape(name)}`)
   return data
 }
 
-const Name = () => {
+export const getServerSideProps = async (context) => {
+    const data = await getPokemon(null, context.params.name)
+    return {
+        props: {
+            data: data
+        },
+    }
+}
 
-    const router = useRouter()
-    const { data } = useQuery(['name', router.query.name], getPokemon)  
-
+const Name = ({ data }) => {
     return (
         <div>
             <Head>
